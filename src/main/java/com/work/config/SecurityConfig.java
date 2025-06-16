@@ -9,15 +9,35 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Bean
+    @Order(0) // Highest precedence for static resources
+    public SecurityFilterChain staticResourcesFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/css/**", "/js/**", "/images/**", "/webjars/**", "/public/**", "/static/**")
+            .authorizeHttpRequests(authorize -> authorize
+                .anyRequest().permitAll() // Permit all requests matching the securityMatcher
+            )
+            .securityContext(AbstractHttpConfigurer::disable) // Stateless, no session needed
+            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
+            .requestCache(RequestCacheConfigurer::disable) // No caching of requests
+            .logout(AbstractHttpConfigurer::disable) // No logout needed
+            .formLogin(AbstractHttpConfigurer::disable) // No login needed
+            .csrf(AbstractHttpConfigurer::disable); // CSRF not needed for static resources
+        return http.build();
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,7 +71,7 @@ public class SecurityConfig {
         http
             .securityMatcher("/admin/**", "/admin-login", "/h2-console/**") // Apply this filter chain only to admin paths
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/admin/login", "/admin-login", "/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
+                .requestMatchers("/admin/login", "/admin-login", "/h2-console/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated() // Or deny if not matched by other filter chains
             )
@@ -82,7 +102,7 @@ public class SecurityConfig {
         http
             .securityMatcher("/company/**", "/company-login")
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/company/login", "/company-login", "/company/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/company/login", "/company-login", "/company/register").permitAll()
                 .requestMatchers("/company/**").hasRole("COMPANY")
                 .anyRequest().authenticated()
             )
@@ -111,7 +131,7 @@ public class SecurityConfig {
         http
             .securityMatcher("/professional/**", "/professional-login")
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/professional/login", "/professional-login", "/professional/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/professional/login", "/professional-login", "/professional/register").permitAll()
                 .requestMatchers("/professional/**").hasRole("PROFESSIONAL")
                 .anyRequest().authenticated()
             )
@@ -139,7 +159,7 @@ public class SecurityConfig {
     public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/home", "/vacancies/**", "/register", "/css/**", "/js/**", "/images/**", "/error/**", "/public/**").permitAll()
+                .requestMatchers("/", "/home", "/vacancies/**", "/register", "/error/**").permitAll()
                 // Any other request not matched by previous filter chains will require authentication by default
                 // or you can specify .anyRequest().denyAll() if all authenticated access is via specific chains.
                 .anyRequest().authenticated()
