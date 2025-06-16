@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="#{login.title.admin}">Admin Login</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h1 th:text="#{login.title.admin}">Admin Login</h1>
+        <form th:action="@{/login/admin}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div>
+                <label for="email" th:text="#{login.email}">Email:</label>
+                <input type="email" id="email" name="email" required autofocus />
+            </div>
+            <div class="password-wrapper">
+                <label for="password" th:text="#{login.password}">Password:</label>
+                <input type="password" id="password" name="password" required />
+                <span class="password-toggle" data-input="password" th:attr="data-text-show=#{button.show}, data-text-hide=#{button.hide}" th:text="#{button.show}">Show</span>
+            </div>
+            <div th:if="${param.error}" class="alert alert-danger" th:text="#{login.error.invalidCredentials}">
+                Invalid email or password.
+            </div>
+            <button type="submit" th:text="#{button.login}">Login</button>
+        </form>
+    </section>
+</body>
+</html>

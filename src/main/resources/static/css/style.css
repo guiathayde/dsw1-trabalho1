@@ -1,0 +1,405 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+/* Header and Navigation */
+header {
+    background: #333;
+    color: #fff;
+    padding-top: 10px;
+    min-height: 70px;
+    border-bottom: #0779e4 3px solid;
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+header ul {
+    padding: 0;
+    list-style: none;
+    text-align: center; /* Center nav links */
+}
+
+header li {
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+
+header nav {
+    margin-bottom: 10px;
+}
+
+.lang-switcher {
+    text-align: right;
+    padding: 5px 20px;
+    font-size: 0.9em;
+}
+.lang-switcher a {
+    margin-left: 5px;
+    margin-right: 5px;
+    color: #fff; /* Make lang switcher links visible on dark header */
+}
+
+
+/* Main Content Area */
+main {
+    padding: 20px 0;
+    min-height: 400px; /* Give some space */
+}
+
+/* Forms */
+form {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="tel"],
+form input[type="date"],
+form input[type="number"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Important for 100% width */
+}
+
+form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Buttons */
+button, .btn {
+    display: inline-block;
+    background: #0779e4;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background: #0056b3;
+}
+
+form button[type="submit"] {
+    background: #5cb85c; /* Green for submit/save */
+}
+form button[type="submit"]:hover {
+    background: #4cae4c;
+}
+
+a.btn.cancel-btn, button.cancel-btn { /* For cancel buttons */
+    background: #f0ad4e; /* Orange for cancel/warning */
+}
+a.btn.cancel-btn:hover, button.cancel-btn:hover {
+    background: #ec971f;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #333;
+    color: #fff;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Alerts and Messages */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger, .error { /* .error for validation messages */
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+span.error { /* More specific for field errors */
+    display: block;
+    font-size: 0.9em;
+    margin-top: 3px;
+}
+
+
+.alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #333;
+    color: #fff;
+    margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    header ul li {
+        display: block;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="tel"],
+    form input[type="date"],
+    form input[type="number"],
+    form select,
+    form textarea {
+        width: 100%; /* Ensure full width on smaller screens */
+    }
+}
+
+/* Password visibility toggle */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] { /* Ensure text version also takes full width */
+    padding-right: 40px; /* Make space for the icon */
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+    font-size: 0.9em;
+    color: #777;
+}
+.password-toggle:hover {
+    color: #333;
+}
+
+/* Vacancy cards for public list */
+.vacancy-card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.vacancy-card h3 {
+    margin-top: 0;
+}
+
+/* General classes for structure */
+.content-section {
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto; /* Center content sections if they are not full width */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    max-width: 1000px; /* Example max-width for readability */
+}
+
+/* Styling for button-like links */
+a.button-link {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 5px 0;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+a.button-link:hover {
+    background-color: #0056b3;
+}
+
+a.button-link-danger {
+    background-color: #dc3545;
+}
+a.button-link-danger:hover {
+    background-color: #c82333;
+}
+
+/* Inline forms for delete buttons */
+form.inline-form {
+    display: inline;
+}
+form.inline-form button {
+    background-color: #dc3545; /* Danger color for delete */
+    font-size: 0.9em; /* Match link buttons */
+    padding: 8px 12px; /* Match link buttons */
+}
+form.inline-form button:hover {
+    background-color: #c82333;
+}
+
+/* Add some spacing around the main element to not touch the footer/header */
+main.container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+h1, h2 {
+    color: #333;
+}
+h1 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+/* Ensure forms inside tables look okay */
+table form {
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+/* Fix for label text not being bold in some cases */
+label {
+    font-weight: bold;
+}
+
+/* Styling for error messages from binding result */
+.error-message {
+    color: #D8000C; /* Red */
+    background-color: #FFD2D2; /* Light red */
+    border: 1px solid #D8000C;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+.error-message ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+.error-message li {
+    margin-bottom: 5px;
+}
+/* Ensure span.error (field specific) is also styled */
+span.error {
+    color: #D8000C;
+    font-size: 0.9em;
+    display: block; /* Make sure it takes its own line */
+    margin-top: 2px;
+}
+
+/* Remove default list styling from nav */
+nav ul {
+    margin: 0;
+}
+
+/* Ensure main content has some top margin if header is fixed or very tall */
+body > main {
+    margin-top: 10px; /* Adjust if header height changes significantly */
+}
+
+/* Adjust header padding for a more balanced look */
+header {
+    padding: 15px 0;
+}
+header nav ul {
+    margin-top: 5px; /* Small top margin for nav links */
+}
+
+/* Style for the main content placeholder in layout.html */
+main section[th\\:fragment="content"] {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Adjust table action buttons/links */
+table td a, table td form button {
+    margin-right: 5px;
+}
+table td a:last-child, table td form:last-child button {
+    margin-right: 0;
+}

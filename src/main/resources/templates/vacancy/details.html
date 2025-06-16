@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="${vacancy.description != null ? vacancy.description : #{vacancy.details.title}}">Vacancy Details</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h1 th:text="${vacancy.description != null ? vacancy.description : #{vacancy.details.title}}">Vacancy Title</h1>
+
+        <div th:if="${vacancy != null}">
+            <p><strong><span th:text="#{vacancy.details.company}">Company</span>:</strong> <span th:text="${vacancy.company?.name ?: 'Not Specified'}">Company Name</span></p>
+            <p><strong><span th:text="#{vacancy.details.description}">Full Description</span>:</strong> <span th:text="${vacancy.description}">Job Description</span></p>
+            <p><strong><span th:text="#{vacancy.details.remuneration}">Remuneration</span>:</strong> <span th:text="${vacancy.remuneration}">Remuneration</span></p>
+            <p><strong><span th:text="#{vacancy.details.deadline}">Application Deadline</span>:</strong> <span th:text="${#temporals.format(vacancy.applicationDeadline, 'dd/MM/yyyy')}">dd/MM/yyyy</span></p>
+            <p><strong><span th:text="#{vacancy.details.city}">City</span>:</strong> <span th:text="${vacancy.city}">City</span></p>
+
+            <!-- Application Section for Professionals -->
+            <div th:if="${isProfessionalLoggedIn}" style="margin-top: 20px; padding: 15px; border: 1px solid #007bff;">
+                <h3 th:text="#{vacancy.details.apply.title}">Apply for this Vacancy</h3>
+                <div th:if="${applicationDeadlinePassed}">
+                    <p class="alert alert-warning" th:text="#{vacancy.details.apply.deadlinePassed}">The application deadline for this vacancy has passed.</p>
+                </div>
+                <div th:if="${alreadyApplied}">
+                    <p class="alert alert-info" th:text="#{vacancy.details.apply.alreadyApplied}">You have already applied for this vacancy.</p>
+                </div>
+
+                <div th:unless="${applicationDeadlinePassed or alreadyApplied}">
+                    <form th:action="@{/professional/applications/apply/{vacancyId}(vacancyId=${vacancy.id})}"
+                          method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                        <div>
+                            <label for="cvFile" th:text="#{vacancy.details.apply.cvFile}">Upload CV (PDF only):</label>
+                            <input type="file" id="cvFile" name="cvFile" accept=".pdf" required />
+                            <!-- Display CV validation errors if any, e.g., from a BindingResult -->
+                            <span th:if="${#fields.hasErrors('cvFile')}" th:errors="*{cvFile}" class="error">CV Error</span>
+                        </div>
+
+                        <div style="margin-top: 10px;">
+                            <label for="qualificationsSummary" th:text="#{vacancy.details.apply.qualifications}">Qualifications Summary (Optional):</label>
+                            <textarea id="qualificationsSummary" name="qualificationsSummary" rows="4" class="form-control"></textarea>
+                        </div>
+
+                        <button type="submit" style="margin-top: 10px;" th:text="#{vacancy.details.apply.submit}">Submit Application</button>
+                    </form>
+                </div>
+            </div>
+            <!-- End Application Section -->
+
+        </div>
+
+        <div th:if="${vacancy == null}">
+            <p th:text="#{vacancy.details.notFound}">Vacancy details not found.</p>
+        </div>
+
+        <p><a th:href="@{/vacancies}" th:text="#{vacancy.details.backToList}">Back to Vacancy List</a></p>
+
+    </section>
+</body>
+</html>

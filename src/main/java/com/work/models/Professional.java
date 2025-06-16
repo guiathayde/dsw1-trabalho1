@@ -40,6 +40,7 @@ public class Professional {
 
     private String gender;
 
+    @NotNull(message = "{professional.birthdate.notnull}")
     @Past(message = "{professional.birthdate.past}")
     private LocalDate birthDate;
 

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  th:fragment="layout(title, content)"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:replace="${title}">Layout</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all"
+      th:href="@{/css/style.css}"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <ul>
+            <li><a th:href="@{/}" th:text="#{nav.home}">Home</a></li>
+            <!-- Unauthenticated users -->
+            <li sec:authorize="isAnonymous()">
+              <a th:href="@{/login/admin}" th:text="#{nav.admin.login}"
+                >Admin Login</a
+              >
+            </li>
+            <li sec:authorize="isAnonymous()">
+              <a th:href="@{/login/company}" th:text="#{nav.company.login}"
+                >Company Login</a
+              >
+            </li>
+            <li sec:authorize="isAnonymous()">
+              <a
+                th:href="@{/login/professional}"
+                th:text="#{nav.professional.login}"
+                >Professional Login</a
+              >
+            </li>
+            <li sec:authorize="isAnonymous()">
+              <a
+                th:href="@{/register/company}"
+                th:text="#{nav.company.register}"
+                >Register Company</a
+              >
+            </li>
+            <li sec:authorize="isAnonymous()">
+              <a
+                th:href="@{/register/professional}"
+                th:text="#{nav.professional.register}"
+                >Register Professional</a
+              >
+            </li>
+            <li>
+              <a th:href="@{/vacancies}" th:text="#{nav.public.vacancies}"
+                >View Vacancies</a
+              >
+            </li>
+
+            <!-- Authenticated users common -->
+            <li sec:authorize="isAuthenticated()">
+              <a th:href="@{/logout}" th:text="#{nav.logout}">Logout</a>
+            </li>
+
+            <!-- Company specific -->
+            <li sec:authorize="hasRole('COMPANY')">
+              <a
+                th:href="@{/company/dashboard}"
+                th:text="#{nav.company.dashboard}"
+                >Company Dashboard</a
+              >
+            </li>
+            <li sec:authorize="hasRole('COMPANY')">
+              <a
+                th:href="@{/company/vacancies}"
+                th:text="#{nav.company.myvacancies}"
+                >My Vacancies</a
+              >
+            </li>
+            <li sec:authorize="hasRole('COMPANY')">
+              <a
+                th:href="@{/company/vacancies/add}"
+                th:text="#{nav.company.addvacancy}"
+                >Add Vacancy</a
+              >
+            </li>
+
+            <!-- Professional specific -->
+            <li sec:authorize="hasRole('PROFESSIONAL')">
+              <a
+                th:href="@{/professional/dashboard}"
+                th:text="#{nav.professional.dashboard}"
+                >Professional Dashboard</a
+              >
+            </li>
+            <li sec:authorize="hasRole('PROFESSIONAL')">
+              <a
+                th:href="@{/professional/applications}"
+                th:text="#{nav.professional.myapplications}"
+                >My Applications</a
+              >
+            </li>
+
+            <!-- Admin specific -->
+            <li sec:authorize="hasRole('ADMIN')">
+              <a th:href="@{/admin/dashboard}" th:text="#{nav.admin.dashboard}"
+                >Admin Dashboard</a
+              >
+            </li>
+          </ul>
+        </nav>
+        <div class="lang-switcher">
+          <a
+            th:href="@{${#httpServletRequest.requestURI}(lang='en')}"
+            th:text="#{lang.en}"
+            >English</a
+          >
+          |
+          <a
+            th:href="@{${#httpServletRequest.requestURI}(lang='pt_BR')}"
+            th:text="#{lang.pt_BR}"
+            >Português (BR)</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main class="container" th:replace="${content}">
+      <p th:text="#{layout.default.content}">This is the default content.</p>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>
+          &copy; <span th:text="${#dates.year(#dates.createNow())}">2023</span>
+          <span th:text="#{app.title}">Job Portal</span>
+        </p>
+      </div>
+    </footer>
+
+    <script th:src="@{/js/main.js}"></script>
+    <th:block th:fragment="scripts">
+      <!-- Page specific scripts can be inserted here -->
+    </th:block>
+    <script>
+      // Preserve query parameters when switching language
+      document.querySelectorAll('.lang-switcher a').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+          var currentUrl = new URL(window.location.href);
+          var targetLang = new URL(link.href).searchParams.get('lang');
+
+          // Preserve existing search params, except 'lang'
+          var searchParams = new URLSearchParams();
+          currentUrl.searchParams.forEach((value, key) => {
+            if (key !== 'lang') {
+              searchParams.append(key, value);
+            }
+          });
+          searchParams.set('lang', targetLang);
+
+          window.location.href =
+            currentUrl.pathname + '?' + searchParams.toString();
+        });
+      });
+    </script>
+  </body>
+</html>

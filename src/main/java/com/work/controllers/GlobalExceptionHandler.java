@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ModelAndView handleNoHandlerFoundException(HttpServletRequest req, NoHandlerFoundException ex, Model model) {
         logger.error("NoHandlerFoundException: URL={}, Error={}", req.getRequestURL(), ex.getMessage());
-        model.addAttribute("errorMessage", "A página solicitada não foi encontrada.");
+        model.addAttribute("errorMessageKey", "error.page.notfound"); // Use key
         model.addAttribute("errorStatus", HttpStatus.NOT_FOUND.value());
         model.addAttribute("url", req.getRequestURL());
         return new ModelAndView("error/404");
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView handleAllUncaughtException(HttpServletRequest req, Exception ex, Model model) {
         logger.error("UnhandledException: URL={}, Error={}", req.getRequestURL(), ex.getMessage(), ex);
-        model.addAttribute("errorMessage", "Ocorreu um erro inesperado no servidor.");
+        model.addAttribute("errorMessageKey", "error.server.unexpected"); // Use key
         model.addAttribute("errorStatus", HttpStatus.INTERNAL_SERVER_ERROR.value());
         // For security, don't pass ex.getMessage() directly to the user for generic exceptions in production
         // model.addAttribute("detailedError", ex.getMessage()); // Maybe only if in debug mode

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="#{professional.applications.list.title}">My Applications</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h1 th:text="#{professional.applications.list.title}">My Applications</h1>
+
+        <div th:if="${#lists.isEmpty(applications)}">
+            <p th:text="#{professional.applications.list.noApplications}">You have not submitted any applications yet.</p>
+            <p><span th:text="#{professional.applications.list.browseLink}">Why not </span> <a th:href="@{/vacancies}" th:text="#{professional.dashboard.browseVacancies}">browse available vacancies</a>?</p>
+        </div>
+
+        <table border="1" th:unless="${#lists.isEmpty(applications)}">
+            <thead>
+                <tr>
+                    <th th:text="#{professional.applications.list.table.vacancy}">Vacancy Description</th>
+                    <th th:text="#{professional.applications.list.table.company}">Company Name</th>
+                    <th th:text="#{professional.applications.list.table.date}">Date of Application</th>
+                    <th th:text="#{professional.applications.list.table.status}">Status</th>
+                    <th th:text="#{professional.applications.list.table.interviewDetails}">Interview Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="application : ${applications}">
+                    <td th:text="${application.vacancy?.description}">Vacancy Description</td>
+                    <td th:text="${application.vacancy?.company?.name}">Company Name</td>
+                    <td th:text="${#temporals.format(application.applicationDate, 'dd/MM/yyyy HH:mm')}">Date</td>
+                    <td th:text="${application.status}">Status</td> <!-- Assuming status is already a human-readable string or will be handled by a custom formatter/enum method if needed -->
+                    <td>
+                        <span th:if="${application.status?.name() == 'ENTREVISTA' AND application.interviewDetails != null}" th:text="${application.interviewDetails}">Interview Details</span>
+                        <span th:if="${application.status?.name() == 'ENTREVISTA' AND application.interviewDetails == null}" th:text="#{professional.applications.list.status.interview.pending}">Pending confirmation</span>
+                        <span th:unless="${application.status?.name() == 'ENTREVISTA'}" th:text="#{professional.applications.list.status.NA}">-</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top:20px;"><a th:href="@{/vacancies}" th:text="#{professional.applications.list.browseMore}">Browse More Vacancies</a></p>
+    </section>
+</body>
+</html>

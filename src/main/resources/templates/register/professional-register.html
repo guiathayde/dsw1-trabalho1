@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="#{register.title.professional}">Professional Registration</title>
+</head>
+<body>
+    <section th:fragment="content">
+        <h1 th:text="#{register.title.professional}">Professional Registration</h1>
+        <form th:action="@{/register/professional}" th:object="${professionalDto}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div>
+                <label for="name" th:text="#{register.name}">Name:</label>
+                <input type="text" id="name" th:field="*{name}" required />
+                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error">Name Error</span>
+            </div>
+
+            <div>
+                <label for="email" th:text="#{register.email}">Email:</label>
+                <input type="email" id="email" th:field="*{email}" required />
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">Email Error</span>
+            </div>
+
+            <div class="password-wrapper">
+                <label for="password" th:text="#{register.password}">Password:</label>
+                <input type="password" id="password" th:field="*{password}" required minlength="8" />
+                <span class="password-toggle" data-input="password" th:attr="data-text-show=#{button.show}, data-text-hide=#{button.hide}" th:text="#{button.show}">Show</span>
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error">Password Error</span>
+            </div>
+
+            <div>
+                <label for="cpf" th:text="#{register.cpf}">CPF:</label>
+                <input type="text" id="cpf" th:field="*{cpf}" required pattern="^(\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11})$" title="Format: XXX.XXX.XXX-XX or XXXXXXXXXXX" />
+                <span th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="error">CPF Error</span>
+            </div>
+
+            <div>
+                <label for="phone" th:text="#{register.phone}">Phone:</label>
+                <input type="tel" id="phone" th:field="*{phone}" required maxlength="20" /> <!-- type="tel" and added required -->
+                <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error">Phone Error</span>
+            </div>
+
+            <div>
+                <label for="sex" th:text="#{register.sex}">Sex:</label>
+                <select id="sex" th:field="*{sex}" required> <!-- Assuming sex is mandatory for registration -->
+                    <option value="" th:text="#{register.sex.select}">Select Sex</option>
+                    <option value="MALE" th:text="#{register.sex.male}">Male</option>
+                    <option value="FEMALE" th:text="#{register.sex.female}">Female</option>
+                    <option value="OTHER" th:text="#{register.sex.other}">Other</option>
+                </select>
+                <span th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}" class="error">Sex Error</span>
+            </div>
+
+            <div>
+                <label for="dateOfBirth" th:text="#{register.dateOfBirth}">Date of Birth:</label>
+                <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required />
+                <span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="error">Date of Birth Error</span>
+            </div>
+
+            <button type="submit" th:text="#{button.register}">Register</button>
+        </form>
+    </section>
+</body>
+</html>

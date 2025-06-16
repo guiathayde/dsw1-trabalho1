@@ -25,6 +25,7 @@ public class Vacancy {
     @Column(nullable = false, columnDefinition="TEXT")
     private String description;
 
+    @NotNull(message = "{vacancy.remuneration.notnull}")
     @DecimalMin(value = "0.01", message = "{vacancy.remuneration.min}") // Changed from 0.0 to 0.01, inclusive false removed
     @Digits(integer=10, fraction=2, message = "{vacancy.remuneration.digits}")
     private BigDecimal remuneration;

@@ -33,6 +33,7 @@ public class Company {
     @Column(nullable = false)
     private String name;
 
+    @NotEmpty(message = "{company.description.notempty}")
     @Lob
     private String description;
 
