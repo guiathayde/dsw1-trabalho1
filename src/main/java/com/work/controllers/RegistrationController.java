@@ -2,11 +2,15 @@ package com.work.controllers;
 
 import com.work.models.Company;
 import com.work.models.Professional;
+import com.work.models.Company;
+import com.work.models.Professional;
 import com.work.services.CompanyService;
 import com.work.services.ProfessionalService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,11 +27,13 @@ public class RegistrationController {
 
     private final ProfessionalService professionalService;
     private final CompanyService companyService;
+    private final MessageSource messageSource;
 
     @Autowired
-    public RegistrationController(ProfessionalService professionalService, CompanyService companyService) {
+    public RegistrationController(ProfessionalService professionalService, CompanyService companyService, MessageSource messageSource) {
         this.professionalService = professionalService;
         this.companyService = companyService;
+        this.messageSource = messageSource;
     }
 
     // == Professional Registration ==
@@ -49,10 +55,10 @@ public class RegistrationController {
         }
         try {
             professionalService.register(professional);
-            redirectAttributes.addFlashAttribute("successMessage", "Cadastro de profissional realizado com sucesso! Faça o login.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("register.professional.success", null, LocaleContextHolder.getLocale()));
             return "redirect:/professional-login";
         } catch (Exception e) { // Catch more specific exceptions like DuplicateResourceException
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar profissional: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("register.professional.error", new Object[]{e.getMessage()}, LocaleContextHolder.getLocale()));
             redirectAttributes.addFlashAttribute("professional", professional);
             return "redirect:/register/professional";
         }
@@ -77,10 +83,10 @@ public class RegistrationController {
         }
         try {
             companyService.register(company);
-            redirectAttributes.addFlashAttribute("successMessage", "Cadastro de empresa realizado com sucesso! Faça o login.");
+            redirectAttributes.addFlashAttribute("successMessage", messageSource.getMessage("register.company.success", null, LocaleContextHolder.getLocale()));
             return "redirect:/company-login";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar empresa: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", messageSource.getMessage("register.company.error", new Object[]{e.getMessage()}, LocaleContextHolder.getLocale()));
             redirectAttributes.addFlashAttribute("company", company);
             return "redirect:/register/company";
         }
