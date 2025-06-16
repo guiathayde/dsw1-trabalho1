@@ -23,18 +23,18 @@
             <li><a th:href="@{/}" th:text="#{nav.home}">Home</a></li>
             <!-- Unauthenticated users -->
             <li sec:authorize="isAnonymous()">
-              <a th:href="@{/login/admin}" th:text="#{nav.admin.login}"
+              <a th:href="@{/admin-login}" th:text="#{nav.admin.login}"
                 >Admin Login</a
               >
             </li>
             <li sec:authorize="isAnonymous()">
-              <a th:href="@{/login/company}" th:text="#{nav.company.login}"
+              <a th:href="@{/company-login}" th:text="#{nav.company.login}"
                 >Company Login</a
               >
             </li>
             <li sec:authorize="isAnonymous()">
               <a
-                th:href="@{/login/professional}"
+                th:href="@{/professional-login}"
                 th:text="#{nav.professional.login}"
                 >Professional Login</a
               >
