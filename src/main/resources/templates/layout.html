@@ -113,14 +113,24 @@
         </nav>
         <div class="lang-switcher">
           <a
+            th:href="@{/(lang='en')}"
+            th:unless="${#httpServletRequest != null}"
+            >English</a
+          >
+          <a
             th:href="@{${#httpServletRequest.requestURI}(lang='en')}"
-            th:text="#{lang.en}"
+            th:if="${#httpServletRequest != null}"
             >English</a
           >
           |
           <a
+            th:href="@{/(lang='pt_BR')}"
+            th:unless="${#httpServletRequest != null}"
+            >Português (BR)</a
+          >
+          <a
             th:href="@{${#httpServletRequest.requestURI}(lang='pt_BR')}"
-            th:text="#{lang.pt_BR}"
+            th:if="${#httpServletRequest != null}"
             >Português (BR)</a
           >
         </div>
