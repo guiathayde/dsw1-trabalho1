@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="#{listaProfissionaisTitulo.label}">Lista de Profissionais</title>
+</head>
+<body>
+    <section class="layout-content" layout:fragment="corpo">
+        <div class="container center">
+            <div class="alert-container" th:replace="fragments/alert"></div>
+            <h1 class="title-text" style="font-size: 2em;" th:text="#{listaProfissionaisTitulo.label}">Lista de Profissionais</h1>
+            <img  src="/image/profissional.png" width="150px" alt="Profissional Icon" />
+            <table class="table-lista">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th th:text="#{email.label}">Email</th>
+                        <th th:text="#{nome.label}">Nome</th>
+                        <th th:text="#{cpf.label}">CPF</th>
+                        <th th:text="#{tabelaAcoes.label}">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="profissional : ${profissionais}">
+                        <td th:text="${profissional.id}"></td>
+                        <td th:text="${profissional.email}"></td>
+                        <td th:text="${profissional.nome}"></td>
+                        <td th:text="${profissional.cpf}"></td>
+                        <td>
+                            <div class="table-action-buttons">
+                                <a class="button-style edit" th:href="@{/profissionais/editar/{id} (id=${profissional.id}) }"
+                                    role="button" th:title="#{editar.label}"> 
+                                    <span class="oi oi-brush" aria-hidden="true"> </span>
+                                </a>
+                                <button
+                                    th:id="${'btn_profissionais/excluir/' + profissional.id}"
+                                    type="button" class="button-style delete"
+                                    data-toggle="modal" data-target="#myModal" th:title="#{excluir.label}">
+                                    <span class="oi oi-circle-x" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="center" style="margin-block: 20px;">
+            <a class="button-style" th:href="@{/profissionais/cadastrar}" role="button"> 
+                <span th:text="#{novoProfissional.label}">Novo Profissional</span>
+            </a>
+        </div>
+        <div th:replace="fragments/modal :: modal"></div>
+    </section>
+</body>
+</html>

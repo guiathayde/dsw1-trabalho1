@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <section class="layout-content" layout:fragment="corpo">
+      <div class="container center">
+        <h1 class="title-text" style="font-size: 2em">Work</h1>
+        <img
+          alt=""
+          th:src="@{/image/imageLogin.png}"
+          style="width: 150px; margin-top: -30px"
+        />
+
+        <!-- Fragmento para exibir alertas de sucesso ou falha -->
+        <div th:replace="~{fragments/alert}"></div>
+        <form th:action="@{/login}" method="POST" style="width: 40%">
+          <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}"
+          />
+          <!-- email -->
+          <div class="item-form">
+            <label for="username" th:text="#{email.label}">Email</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              name="username"
+              th:placeholder="#{emailLoginPlaceholder.label}"
+              required
+            />
+          </div>
+
+          <!-- senha -->
+          <div class="item-form">
+            <label for="password" th:text="#{senha.label}">Senha</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              th:placeholder="#{senhaLoginPlaceholder.label}"
+              required
+            />
+          </div>
+
+          <div class="center" style="flex-direction: row">
+            <button
+              style="margin: 15px; width: 40%"
+              type="submit"
+              class="button-style"
+              th:text="#{entrar.label}"
+            >
+              Entrar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

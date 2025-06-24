@@ -1,405 +1,385 @@
-/* General Body Styles */
+/* Base structure */
+html,
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+  height: 100%;
+}
+
+body {
+  padding-left: 0;
+  background-color: #f0f2f5; /* Light grey background for better contrast */
+}
+
+/* main layout */
+.layout-main {
+  display: flex;
+  min-height: calc(80vh - 52px);
+  overflow: hidden;
+}
+
+/* Content */
+.layout-content {
+  width: 100%;
+  padding-top: 20px; /* Added some padding */
 }
 
 .container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-    padding: 0 20px;
+  width: 100%;
+  padding-top: 20px;
 }
 
-/* Header and Navigation */
-header {
-    background: #333;
-    color: #fff;
-    padding-top: 10px;
-    min-height: 70px;
-    border-bottom: #0779e4 3px solid;
+/* Sidebar */
+.sidebar {
+  width: 0px;
+  height: 80vh;
+  border-top: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  background-color: #ffffff;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.5s;
 }
 
-header a {
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 16px;
+.sidebar .nav {
+  margin-bottom: 0px;
 }
 
-header ul {
-    padding: 0;
-    list-style: none;
-    text-align: center; /* Center nav links */
+.sidebar .nav-item {
+  width: 100%;
 }
 
-header li {
-    display: inline;
-    padding: 0 20px 0 20px;
+.sidebar .nav-link {
+  border-radius: 0;
+  color: #495057;
 }
 
-header nav {
-    margin-bottom: 10px;
+.sidebar .nav-link:hover,
+.sidebar .nav-item.active .nav-link {
+  background-color: #007bff;
+  color: #ffffff;
 }
 
-.lang-switcher {
-    text-align: right;
-    padding: 5px 20px;
-    font-size: 0.9em;
-}
-.lang-switcher a {
-    margin-left: 5px;
-    margin-right: 5px;
-    color: #fff; /* Make lang switcher links visible on dark header */
+.sidebar ul {
+  list-style: none;
+  padding: 10px 0px;
 }
 
-
-/* Main Content Area */
-main {
-    padding: 20px 0;
-    min-height: 400px; /* Give some space */
+.sidebar ul li a {
+  display: block;
+  padding: 10px 15px;
+  white-space: nowrap;
 }
 
-/* Forms */
-form {
-    background: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.sidebar.sidebar-open {
+  width: 250px; /* Slightly adjusted width */
 }
 
-form div {
-    margin-bottom: 15px;
+/* nav-pills home */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #007bff;
 }
 
-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="password"],
-form input[type="tel"],
-form input[type="date"],
-form input[type="number"],
-form select,
-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box; /* Important for 100% width */
-}
-
-form textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
-/* Buttons */
-button, .btn {
-    display: inline-block;
-    background: #0779e4;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 15px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover, .btn:hover {
-    background: #0056b3;
-}
-
-form button[type="submit"] {
-    background: #5cb85c; /* Green for submit/save */
-}
-form button[type="submit"]:hover {
-    background: #4cae4c;
-}
-
-a.btn.cancel-btn, button.cancel-btn { /* For cancel buttons */
-    background: #f0ad4e; /* Orange for cancel/warning */
-}
-a.btn.cancel-btn:hover, button.cancel-btn:hover {
-    background: #ec971f;
-}
-
-/* Tables */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-table th, table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-table th {
-    background-color: #333;
-    color: #fff;
-}
-
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* Alerts and Messages */
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-
-.alert-success {
-    color: #3c763d;
-    background-color: #dff0d8;
-    border-color: #d6e9c6;
-}
-
-.alert-danger, .error { /* .error for validation messages */
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
-}
-span.error { /* More specific for field errors */
-    display: block;
-    font-size: 0.9em;
-    margin-top: 3px;
-}
-
-
-.alert-info {
-    color: #31708f;
-    background-color: #d9edf7;
-    border-color: #bce8f1;
-}
-
-.alert-warning {
-    color: #8a6d3b;
-    background-color: #fcf8e3;
-    border-color: #faebcc;
+/* toogle do navbar do menu */
+.navbar-toggle {
+  display: inline-block;
+  margin-left: 10px;
 }
 
 /* Footer */
-footer {
-    text-align: center;
-    padding: 20px;
-    background: #333;
-    color: #fff;
-    margin-top: 20px;
+.layout-footer {
+  position: relative;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  height: 84px;
+  border-top: 1px solid #dee2e6;
+  background-color: #ffffff;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    header ul li {
-        display: block;
-        text-align: center;
-        padding: 10px 0;
-    }
-
-    form input[type="text"],
-    form input[type="email"],
-    form input[type="password"],
-    form input[type="tel"],
-    form input[type="date"],
-    form input[type="number"],
-    form select,
-    form textarea {
-        width: 100%; /* Ensure full width on smaller screens */
-    }
+.footer-copy {
+  font-size: 0.9em;
+  display: block;
+  color: #6c757d;
+  text-align: center;
+  line-height: 50px;
 }
 
-/* Password visibility toggle */
-.password-wrapper {
-    position: relative;
+/* Status colors */
+.status-form {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.status-select {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
 }
 
-.password-wrapper input[type="password"],
-.password-wrapper input[type="text"] { /* Ensure text version also takes full width */
-    padding-right: 40px; /* Make space for the icon */
+.status-OPEN {
+  color: #007bff;
+  font-weight: bold;
+}
+.status-NOT_SELECTED {
+  color: #dc3545;
+  font-weight: bold;
+}
+.status-INTERVIEW {
+  color: #28a745;
+  font-weight: bold;
 }
 
-.password-toggle {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    user-select: none; /* Prevent text selection */
-    font-size: 0.9em;
-    color: #777;
-}
-.password-toggle:hover {
-    color: #333;
+/* HEADER */
+.header {
+  background-color: #0056b3; /* Darker blue for header */
+  color: #ffffff;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
-/* Vacancy cards for public list */
-.vacancy-card {
-    background: #fff;
-    padding: 15px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.vacancy-card h3 {
-    margin-top: 0;
+.header-languages {
+  display: flex;
+  gap: 8px;
+
+  height: 100%;
 }
 
-/* General classes for structure */
-.content-section {
-    background: #fff;
-    padding: 20px;
-    margin: 20px auto; /* Center content sections if they are not full width */
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    max-width: 1000px; /* Example max-width for readability */
+.header-title a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
-/* Styling for button-like links */
-a.button-link {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 5px 0;
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9em;
-}
-a.button-link:hover {
-    background-color: #0056b3;
+.header-buttons {
+  display: flex;
 }
 
-a.button-link-danger {
-    background-color: #dc3545;
-}
-a.button-link-danger:hover {
-    background-color: #c82333;
+.header-buttons .button-style {
+  margin-left: 10px;
 }
 
-/* Inline forms for delete buttons */
-form.inline-form {
-    display: inline;
-}
-form.inline-form button {
-    background-color: #dc3545; /* Danger color for delete */
-    font-size: 0.9em; /* Match link buttons */
-    padding: 8px 12px; /* Match link buttons */
-}
-form.inline-form button:hover {
-    background-color: #c82333;
-}
-
-/* Add some spacing around the main element to not touch the footer/header */
-main.container {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-h1, h2 {
-    color: #333;
-}
-h1 {
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-h2 {
-    margin-top: 30px;
-    margin-bottom: 15px;
+.button-style {
+  background-color: #007bff; /* Main blue color */
+  color: #ffffff;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Ensure forms inside tables look okay */
-table form {
-    box-shadow: none;
-    padding: 0;
-    margin-bottom: 0;
+.button-style:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  color: #ffffff;
+  text-decoration: none;
+}
+/* FIM HEADER */
+
+/* PAGINAS PROFILE */
+.profile-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 30px;
+  text-align: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Fix for label text not being bold in some cases */
-label {
-    font-weight: bold;
+.title-text {
+  font-size: 2em;
+  color: #0056b3;
+  margin-bottom: 20px;
+  line-height: 1.3;
 }
 
-/* Styling for error messages from binding result */
-.error-message {
-    color: #D8000C; /* Red */
-    background-color: #FFD2D2; /* Light red */
-    border: 1px solid #D8000C;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 4px;
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
 }
-.error-message ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-.error-message li {
-    margin-bottom: 5px;
-}
-/* Ensure span.error (field specific) is also styled */
-span.error {
-    color: #D8000C;
-    font-size: 0.9em;
-    display: block; /* Make sure it takes its own line */
-    margin-top: 2px;
+/* FIM PAGINAS PROFILE */
+
+/* PAGINA DE CADASTRO */
+.role-selection-buttons {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
 
-/* Remove default list styling from nav */
-nav ul {
-    margin: 0;
+.inactive {
+  background-color: #6c757d;
+  color: #ffffff;
+  border: #6c757d 1px solid;
 }
 
-/* Ensure main content has some top margin if header is fixed or very tall */
-body > main {
-    margin-top: 10px; /* Adjust if header height changes significantly */
+.inactive:hover {
+  background-color: #5a6268;
+  color: #ffffff;
+  text-decoration: none;
 }
 
-/* Adjust header padding for a more balanced look */
-header {
-    padding: 15px 0;
+.role-buttons {
+  width: 45%;
+  padding: 15px;
+  font-size: 1.1em;
 }
-header nav ul {
-    margin-top: 5px; /* Small top margin for nav links */
+/* FIM PAGINA DE CADASTRO */
+
+/* PAGINA VAGAS LISTAR */
+.busca {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  justify-content: center;
 }
 
-/* Style for the main content placeholder in layout.html */
-main section[th\\:fragment="content"] {
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.busca input {
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 1em;
+  flex-grow: 1;
+  max-width: 400px;
 }
 
-/* Adjust table action buttons/links */
-table td a, table td form button {
-    margin-right: 5px;
+.job-card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  position: relative;
 }
-table td a:last-child, table td form:last-child button {
-    margin-right: 0;
+
+.job-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
 }
+
+.job-card-header h2 {
+  color: #0056b3;
+  font-size: 1.4em;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.job-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.company-info {
+  font-weight: bold;
+  color: #007bff;
+}
+
+.company-info a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.job-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+/* FIM PAGINA VAGAS LISTAR */
+
+/* PAGINA CADASTRO VAGAS */
+.center {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.item-form {
+  margin-bottom: 15px;
+  font-weight: bold;
+  width: 100%;
+}
+/* FIM PAGINA CADASTRO VAGAS */
+
+/* PAGINA LISTAR USUARIOS */
+.table-lista {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-lista thead {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+.table-lista th,
+.table-lista td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table-lista tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-lista tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.table-action-buttons {
+  display: flex;
+  gap: 8px;
+}
+.table-action-buttons .button-style {
+  padding: 6px 12px;
+  font-size: 0.9em;
+  border-radius: 5px;
+}
+.edit {
+  background-color: #17a2b8;
+}
+.edit:hover {
+  background-color: #138496;
+}
+.delete {
+  background-color: #dc3545;
+}
+.delete:hover {
+  background-color: #c82333;
+}
+.alert-container {
+  max-width: 960px;
+  margin: 0 auto 20px;
+}
+/* FIM PAGINA LISTAR USUARIOS */
