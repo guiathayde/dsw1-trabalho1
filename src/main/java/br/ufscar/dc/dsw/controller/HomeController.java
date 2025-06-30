@@ -1,42 +1,31 @@
 package br.ufscar.dc.dsw.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import br.ufscar.dc.dsw.domain.Vaga;
+import br.ufscar.dc.dsw.service.spec.IVagaService;
 
 @Controller
 public class HomeController {
-	@GetMapping("/")
-	public String home() {
-		return "home";
-	}
-	@GetMapping("/perfilAdministrador")
-	public String perfilAdministrador() {
-		return "perfilAdministrador";
-	}
-	@GetMapping("/perfilEmpresa")
-	public String perfilEmpresa() {
-		return "perfilEmpresa";
-	}
-	@GetMapping("/perfilProfissional")
-	public String perfilProfissional() {
-		return "perfilProfissional";
-	}
-	@GetMapping("/login")
-	public String login() {
-		return "login";
-	}
-	@GetMapping("/vagas")
-	public String vagas() {
-		return "vagas";
-	}
-	@GetMapping("/acessoNegado")
-    public String acessoNegado(RedirectAttributes attr) {
-        return "acessoNegado";
+
+    @Autowired
+    private IVagaService vagaService;
+
+    @GetMapping("/home")
+    public String home(ModelMap model, @RequestParam(required = false) String cidade) {
+        List<Vaga> vagas;
+        if (cidade != null && !cidade.isEmpty()) {
+            vagas = vagaService.buscarVagasAbertasPorCidade(cidade);
+        } else {
+            vagas = vagaService.buscarVagasAbertas();
+        }
+        model.addAttribute("vagas", vagas);
+        return "home";
     }
-	@GetMapping("/erro")
-	public String paginaDeErro() {
-			return "erro";
-	}
 }

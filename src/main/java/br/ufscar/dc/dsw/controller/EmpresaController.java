@@ -1,6 +1,9 @@
 package br.ufscar.dc.dsw.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -10,9 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.ufscar.dc.dsw.domain.Company;
+import br.ufscar.dc.dsw.domain.Empresa;
 import br.ufscar.dc.dsw.service.spec.IEmpresaService;
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/empresas")
@@ -21,8 +23,11 @@ public class EmpresaController {
     @Autowired
     private IEmpresaService service;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     @GetMapping("/cadastrar")
-    public String cadastrar(Company empresa) {
+    public String cadastrar(Empresa empresa) {
         return "empresa/cadastro";
     }
 
@@ -33,16 +38,16 @@ public class EmpresaController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@Valid Company empresa, BindingResult result, RedirectAttributes attr) {
-
-        service.validarCamposUnicos(empresa, result);
-
+    public String salvar(@Valid Empresa empresa, BindingResult result, RedirectAttributes attr, ModelMap model) {
         if (result.hasErrors()) {
+            System.out.println(result.getAllErrors());
+            model.addAttribute("empresa", empresa);
             return "empresa/cadastro";
         }
 
+        empresa.setPassword(encoder.encode(empresa.getPassword()));
         service.salvar(empresa);
-        attr.addFlashAttribute("sucess", "Company inserida com sucesso.");
+        attr.addFlashAttribute("sucess", "empresa.create.sucess");
         return "redirect:/empresas/listar";
     }
 
@@ -53,23 +58,22 @@ public class EmpresaController {
     }
 
     @PostMapping("/editar")
-    public String editar(@Valid Company empresa, BindingResult result, RedirectAttributes attr) {
-
-        service.validarCamposUnicos(empresa, result);
+    public String editar(@Valid Empresa empresa, BindingResult result, RedirectAttributes attr, ModelMap model) {
+        if (result.hasErrors()) {
+            System.out.println(result.getAllErrors());
+            model.addAttribute("empresa", empresa);
+            return "empresa/cadastro";
+        }
 
         service.salvar(empresa);
-        attr.addFlashAttribute("sucess", "Company editada com sucesso.");
+        attr.addFlashAttribute("sucess", "empresa.edit.sucess");
         return "redirect:/empresas/listar";
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable("id") Long id, ModelMap model, RedirectAttributes attr) {
-        try {
-            service.excluir(id);
-            attr.addFlashAttribute("sucess", "Company excluída com sucesso.");
-        } catch (Exception e) {
-            return "redirect:/erro?msg=Não foi possível excluir a empresa. Verifique se ela possui vagas ativas.";
-        }
+    public String excluir(@PathVariable("id") Long id, RedirectAttributes attr) {
+        service.excluir(id);
+        attr.addFlashAttribute("sucess", "empresa.delete.sucess");
         return "redirect:/empresas/listar";
     }
 }

@@ -1,36 +1,27 @@
 package br.ufscar.dc.dsw.dao;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import br.ufscar.dc.dsw.domain.Company;
-import br.ufscar.dc.dsw.domain.Vacancy;
+import br.ufscar.dc.dsw.domain.Vaga;
+import br.ufscar.dc.dsw.domain.Empresa;
 
 @SuppressWarnings("unchecked")
-public interface IVagaDAO extends CrudRepository<Vacancy, Long> {
-    Vacancy findById(long id);
+public interface IVagaDAO extends CrudRepository<Vaga, Long> {
 
-    List<Vacancy> findAll();
+    Vaga findById(long id);
 
-    List<Vacancy> findByCompany(Company company);
+    List<Vaga> findAll();
 
-    List<Vacancy> findByCompanyAndRegistrationDeadlineAfter(Company company, Date date);
-
-    List<Vacancy> findByCompanyAndRegistrationDeadlineBefore(Company company, Date date);
-
-    List<Vacancy> findByRegistrationDeadlineAfter(Date date);
-
-    List<Vacancy> findByRegistrationDeadlineAfterAndCityLikeIgnoreCase(Date date, String city);
-
-    List<Vacancy> findByActiveTrueAndRegistrationDeadlineBefore(Date date);
-
-    long countByCompanyAndActiveTrue(Company company);
-
-    List<Vacancy> findByTitle(String title);
-
-    Vacancy save(Vacancy vacancy);
+    Vaga save(Vaga vaga);
 
     void deleteById(Long id);
+
+    List<Vaga> findByEmpresa(Empresa empresa);
+
+    List<Vaga> findByDataLimiteInscricaoAfter(LocalDate data);
+
+    List<Vaga> findByDataLimiteInscricaoAfterAndEmpresaCidade(LocalDate data, String cidade);
 }

@@ -2,29 +2,22 @@ package br.ufscar.dc.dsw.service.spec;
 
 import java.util.List;
 
-import br.ufscar.dc.dsw.domain.Company;
-import br.ufscar.dc.dsw.domain.Vacancy;
+import br.ufscar.dc.dsw.domain.Vaga;
+import br.ufscar.dc.dsw.domain.Empresa;
 
 public interface IVagaService {
-    Vacancy buscarPorId(Long id);
 
-    List<Vacancy> buscarTodos();
+    Vaga buscarPorId(Long id);
 
-    List<Vacancy> buscarPorEmpresa(Company empresa);
+    List<Vaga> buscarTodos();
 
-    List<Vacancy> buscarTodasVagasEmAberto();
-
-    List<Vacancy> buscarVagasEmAbertoPorCidade(String cidade);
-
-    long contarVagasAtivasPorEmpresa(Company empresa);
-
-    void desativarVagasExpiradas();
-
-    void salvar(Vacancy vaga);
+    void salvar(Vaga vaga);
 
     void excluir(Long id);
 
-    List<Vacancy> buscarVagasAbertasPorEmpresa(Company empresa);
+    List<Vaga> buscarPorEmpresa(Empresa empresa);
 
-    List<Vacancy> buscarVagasExpiradasPorEmpresa(Company empresa);
+    List<Vaga> buscarVagasAbertas();
+
+    List<Vaga> buscarVagasAbertasPorCidade(String cidade);
 }

@@ -2,16 +2,15 @@ package br.ufscar.dc.dsw.service.spec;
 
 import java.util.List;
 
-import br.ufscar.dc.dsw.domain.User;
+import br.ufscar.dc.dsw.domain.Usuario;
 
 public interface IUsuarioService {
-    User buscarPorId(Long id);
 
-    User buscarPorEmail(String email);
+	Usuario buscarPorId(Long id);
 
-    List<User> buscarTodos();
+	List<Usuario> buscarTodos();
 
-    void salvar(User usuario);
+	void salvar(Usuario editora);
 
-    void excluir(Long id);
+	void excluir(Long id);	
 }

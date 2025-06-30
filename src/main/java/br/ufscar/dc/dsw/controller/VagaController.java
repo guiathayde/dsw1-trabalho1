@@ -1,11 +1,10 @@
 package br.ufscar.dc.dsw.controller;
 
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -16,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.ufscar.dc.dsw.domain.Company;
-import br.ufscar.dc.dsw.domain.Vacancy;
-import br.ufscar.dc.dsw.service.spec.IEmpresaService;
+import br.ufscar.dc.dsw.domain.Vaga;
+import br.ufscar.dc.dsw.domain.Candidatura;
+import br.ufscar.dc.dsw.domain.Empresa;
+import br.ufscar.dc.dsw.service.spec.ICandidaturaService;
+import br.ufscar.dc.dsw.service.spec.IEmailService;
 import br.ufscar.dc.dsw.service.spec.IVagaService;
-import jakarta.validation.Valid;
+import br.ufscar.dc.dsw.security.UsuarioDetails;
 
 @Controller
 @RequestMapping("/vagas")
@@ -30,76 +31,89 @@ public class VagaController {
     private IVagaService vagaService;
 
     @Autowired
-    private IEmpresaService empresaService;
+    private ICandidaturaService candidaturaService;
 
-    @GetMapping("/listar")
-    public String listar(@RequestParam(value = "cidade", required = false) String cidade, ModelMap model) {
-        List<Vacancy> vagas;
-        if (cidade != null && !cidade.isEmpty()) {
-            vagas = vagaService.buscarVagasEmAbertoPorCidade(cidade);
-        } else {
-            vagas = vagaService.buscarTodasVagasEmAberto();
-        }
-
-        Map<Long, Long> empresaVagasCountMap = new HashMap<>();
-        for (Vacancy vaga : vagas) {
-            Long empresaId = vaga.getCompany().getId();
-            if (!empresaVagasCountMap.containsKey(empresaId)) {
-                long count = vagaService.contarVagasAtivasPorEmpresa(vaga.getCompany());
-                empresaVagasCountMap.put(empresaId, count);
-            }
-        }
-
-        model.addAttribute("vagas", vagas);
-        model.addAttribute("empresaVagasCountMap", empresaVagasCountMap);
-        return "vaga/lista";
-    }
+    @Autowired
+    private IEmailService emailService;
 
     @GetMapping("/cadastrar")
-    public String cadastrar(Vacancy vaga) {
+    public String cadastrar(Vaga vaga, ModelMap model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+        Empresa empresa = (Empresa) userDetails.getUsuario();
+        model.addAttribute("empresa", empresa);
         return "vaga/cadastro";
     }
 
     @PostMapping("/salvar")
-    public String salvar(@Valid Vacancy vaga, BindingResult result, RedirectAttributes attr, Principal principal) {
+    public String salvar(@Valid Vaga vaga, BindingResult result, RedirectAttributes attr, ModelMap model) {
         if (result.hasErrors()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+            Empresa empresa = (Empresa) userDetails.getUsuario();
+            model.addAttribute("empresa", empresa);
             return "vaga/cadastro";
         }
-
-        Company empresa = empresaService.buscarPorEmail(principal.getName());
-        if (empresa == null) {
-            attr.addFlashAttribute("fail", "Erro: Company não encontrada para o usuário logado.");
-            return "redirect:/vagas/listar";
-        }
-
-        vaga.setCompany(empresa);
-        vaga.setActive(true);
-        vaga.setRegistrationDeadline(vaga.getRegistrationDeadline());
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+        Empresa empresaLogada = (Empresa) userDetails.getUsuario();
+        vaga.setEmpresa(empresaLogada);
         vagaService.salvar(vaga);
-        attr.addFlashAttribute("sucess", "Vacancy cadastrada com sucesso!");
-        return "redirect:/vagas/minhasVagas";
+        attr.addFlashAttribute("sucess", "vaga.create.sucess");
+        return "redirect:/vagas/listar";
     }
 
-    @GetMapping("/minhasVagas")
-    public String minhasVagas(ModelMap model, Principal principal) {
-        Company empresa = empresaService.buscarPorEmail(principal.getName());
-        List<Vacancy> vagasAtivas = vagaService.buscarVagasAbertasPorEmpresa(empresa);
-        List<Vacancy> vagasExpiradas = vagaService.buscarVagasExpiradasPorEmpresa(empresa);
-
-        model.addAttribute("vagasAtivas", vagasAtivas);
-        model.addAttribute("vagasExpiradas", vagasExpiradas);
-        return "vaga/minhasVagas";
+    @GetMapping("/listar")
+    public String listarMinhasVagas(ModelMap model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+        Empresa empresa = (Empresa) userDetails.getUsuario();
+        model.addAttribute("vagas", vagaService.buscarPorEmpresa(empresa));
+        return "vaga/lista";
     }
 
-    @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable("id") Long id, RedirectAttributes attr) {
-        try {
-            vagaService.excluir(id);
-            attr.addFlashAttribute("sucess", "Vacancy excluída com sucesso!");
-        } catch (Exception e) {
-            return "redirect:/erro?msg=Não foi possível excluir a vaga. Verifique se ela possui candidaturas ativas.";
+    @GetMapping("/candidaturas/{id}")
+    public String listarCandidaturasPorVaga(@PathVariable("id") Long id, ModelMap model) {
+        Vaga vaga = vagaService.buscarPorId(id);
+        model.addAttribute("vaga", vaga);
+        model.addAttribute("candidaturas", candidaturaService.buscarCandidaturasPorVaga(vaga));
+        return "vaga/candidaturas";
+    }
+
+    @PostMapping("/candidaturas/atualizarStatus")
+    public String atualizarStatusCandidatura(@RequestParam("candidaturaId") Long candidaturaId,
+            @RequestParam("status") String status,
+            @RequestParam(value = "horarioEntrevista", required = false) String horarioEntrevista,
+            @RequestParam(value = "linkEntrevista", required = false) String linkEntrevista,
+            RedirectAttributes attr) {
+        Candidatura candidatura = candidaturaService.buscarPorId(candidaturaId);
+        if (candidatura == null) {
+            attr.addFlashAttribute("fail", "Candidatura não encontrada.");
+            return "redirect:/vagas/candidaturas/" + candidatura.getVaga().getId();
         }
-        return "redirect:/vagas/minhasVagas";
+
+        candidatura.setStatus(status);
+        candidaturaService.salvar(candidatura);
+
+        String subject = "Atualização da sua candidatura para a vaga de " + candidatura.getVaga().getDescricao();
+        String body = "Prezado(a) " + candidatura.getProfissional().getName() + ",\n\n";
+
+        if ("ENTREVISTA".equals(status)) {
+            body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
+                    + " foi selecionada para entrevista.\n";
+            body += "Horário da entrevista: " + horarioEntrevista + "\n";
+            body += "Link da entrevista: " + linkEntrevista + "\n\n";
+            body += "Aguardamos você!\n\n";
+        } else if ("NAO_SELECIONADO".equals(status)) {
+            body += "Informamos que sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
+                    + " não foi selecionada neste momento.\n\n";
+            body += "Agradecemos seu interesse e desejamos sucesso em suas próximas candidaturas.\n\n";
+        }
+        body += "Atenciosamente,\n" + candidatura.getVaga().getEmpresa().getName();
+
+        emailService.sendEmail(candidatura.getProfissional().getUsername(), subject, body);
+
+        attr.addFlashAttribute("sucess", "vaga.update.success");
+        return "redirect:/vagas/candidaturas/" + candidatura.getVaga().getId();
     }
 }

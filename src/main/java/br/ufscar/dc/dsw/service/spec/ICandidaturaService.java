@@ -2,22 +2,23 @@ package br.ufscar.dc.dsw.service.spec;
 
 import java.util.List;
 
-import br.ufscar.dc.dsw.domain.Application;
-import br.ufscar.dc.dsw.domain.Professional;
-import br.ufscar.dc.dsw.domain.Vacancy;
+import br.ufscar.dc.dsw.domain.Candidatura;
+import br.ufscar.dc.dsw.domain.Profissional;
+import br.ufscar.dc.dsw.domain.Vaga;
 
 public interface ICandidaturaService {
-    Application buscarPorId(Long id);
 
-    List<Application> buscarPorProfissional(Professional profissional);
+    Candidatura buscarPorId(Long id);
 
-    Application buscarPorProfissionalEVaga(Professional profissional, Vacancy vaga);
+    List<Candidatura> buscarTodos();
 
-    List<Application> buscarPorVaga(Vacancy vaga);
-
-    void salvar(Application candidatura);
+    void salvar(Candidatura candidatura);
 
     void excluir(Long id);
 
-    boolean jaCandidatou(Professional profissional, Vacancy vaga);
+    List<Candidatura> buscarPorProfissional(Profissional profissional);
+
+    Candidatura buscarPorProfissionalEVaga(Profissional profissional, Vaga vaga);
+
+    List<Candidatura> buscarCandidaturasPorVaga(Vaga vaga);
 }

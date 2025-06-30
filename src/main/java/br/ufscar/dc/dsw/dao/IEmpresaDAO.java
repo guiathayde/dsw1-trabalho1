@@ -1,22 +1,24 @@
 package br.ufscar.dc.dsw.dao;
 
+import br.ufscar.dc.dsw.domain.Empresa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
+public interface IEmpresaDAO extends CrudRepository<Empresa, Long> {
+    Empresa findById(long id);
 
-import br.ufscar.dc.dsw.domain.Company;
+    List<Empresa> findAll();
 
-@SuppressWarnings("unchecked")
-public interface IEmpresaDAO extends CrudRepository<Company, Long> {
-    Company findById(long id);
-
-    Company findByEmail(String email);
-
-    Company findByCnpj(String cnpj);
-
-    List<Company> findAll();
-
-    Company save(Company empresa);
+    Empresa save(Empresa empresa);
 
     void deleteById(Long id);
+
+    @Query("SELECT e FROM Empresa e WHERE e.username = :username")
+    Empresa findByUsername(@Param("username") String username);
+
+    @Query("SELECT e FROM Empresa e WHERE e.cnpj = :cnpj")
+    Empresa findByCnpj(@Param("cnpj") String cnpj);
 }

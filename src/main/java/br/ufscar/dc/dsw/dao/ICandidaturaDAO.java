@@ -4,21 +4,21 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import br.ufscar.dc.dsw.domain.Application;
-import br.ufscar.dc.dsw.domain.Professional;
-import br.ufscar.dc.dsw.domain.Vacancy;
+import br.ufscar.dc.dsw.domain.Candidatura;
+import br.ufscar.dc.dsw.domain.Profissional;
+import br.ufscar.dc.dsw.domain.Vaga;
 
-@SuppressWarnings("unchecked")
-public interface ICandidaturaDAO extends CrudRepository<Application, Long> {
-    Application findById(long id);
+public interface ICandidaturaDAO extends CrudRepository<Candidatura, Long> {
 
-    List<Application> findByProfessional(Professional professional);
+    Candidatura findById(long id);
 
-    Application findByProfessionalAndVacancy(Professional professional, Vacancy vacancy);
+    List<Candidatura> findAll();
 
-    List<Application> findByVacancy(Vacancy vacancy);
+    List<Candidatura> findByProfissional(Profissional profissional);
 
-    Application save(Application application);
+    Candidatura findByProfissionalAndVaga(Profissional profissional, Vaga vaga);
+
+    List<Candidatura> findByVaga(Vaga vaga);
 
     void deleteById(Long id);
 }

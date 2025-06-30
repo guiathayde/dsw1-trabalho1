@@ -19,16 +19,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) throws IOException, ServletException {
 
-    String redirectUrl = "/"; 
+    String redirectUrl = "/";
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
     // Verifica o papel e define a URL de redirecionamento
     if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-        redirectUrl = "/perfilAdministrador";
-    } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"))) {
-        redirectUrl = "/perfilEmpresa";
-    } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_PROFESSIONAL"))) {
-        redirectUrl = "/perfilProfissional";
+      redirectUrl = "/home";
+    } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_EMPRESA"))) {
+      redirectUrl = "/home";
+    } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_PROFISSIONAL"))) {
+      redirectUrl = "/home";
     }
 
     response.sendRedirect(request.getContextPath() + redirectUrl);

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+
+		<nav class="navbar navbar-expand-md bg-light">
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<i class="oi oi-caret-right"></i>
+						<span th:text="#{candidatura.listarPorVaga.label}"></span>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="container" id="listagem">
+
+			<div th:replace="~{fragments/alert}"></div>
+
+			<h4 th:text="#{vaga.descricao.label} + ': ' + ${vaga.descricao}"></h4>
+
+			<div class="table-responsive">
+				<table class="table table-striped table-hover table-sm">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th th:text="#{profissional.name.label}"></th>
+							<th th:text="#{profissional.CPF.label}"></th>
+							<th th:text="#{candidatura.status.label}"></th>
+							<th th:text="#{candidatura.curriculo.label}"></th>
+							<th th:text="#{acao.label}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="candidatura : ${candidaturas}">
+							<td th:text="${candidatura.id}"></td>
+							<td th:text="${candidatura.profissional.name}"></td>
+							<td th:text="${candidatura.profissional.CPF}"></td>
+							<td th:text="${candidatura.status}"></td>
+							<td><a th:href="@{/curriculos/{file}(file=${candidatura.curriculoPath})}" target="_blank">Visualizar</a></td>
+							<td>
+								<form th:action="@{/vagas/candidaturas/atualizarStatus}" method="post">
+									<input type="hidden" name="candidaturaId" th:value="${candidatura.id}">
+									<select name="status" class="form-control form-control-sm">
+										<option value="ABERTO" th:selected="${candidatura.status == 'ABERTO'}">ABERTO</option>
+										<option value="NAO_SELECIONADO" th:selected="${candidatura.status == 'NAO_SELECIONADO'}">NÃO SELECIONADO</option>
+										<option value="ENTREVISTA" th:selected="${candidatura.status == 'ENTREVISTA'}">ENTREVISTA</option>
+									</select>
+									<div th:if="${candidatura.status == 'ENTREVISTA'}">
+										<input type="text" name="horarioEntrevista" placeholder="Horário da Entrevista" class="form-control form-control-sm mt-1">
+										<input type="text" name="linkEntrevista" placeholder="Link da Entrevista" class="form-control form-control-sm mt-1">
+									</div>
+									<button type="submit" class="btn btn-primary btn-sm mt-1">Atualizar</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div th:replace="~{fragments/modal::modal}"></div>
+	</section>
+</body>
+</html>

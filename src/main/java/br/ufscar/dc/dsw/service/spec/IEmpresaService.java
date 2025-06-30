@@ -2,22 +2,15 @@ package br.ufscar.dc.dsw.service.spec;
 
 import java.util.List;
 
-import org.springframework.validation.Errors;
-
-import br.ufscar.dc.dsw.domain.Company;
+import br.ufscar.dc.dsw.domain.Empresa;
 
 public interface IEmpresaService {
-    Company buscarPorId(Long id);
 
-    List<Company> buscarTodos();
+    Empresa buscarPorId(Long id);
 
-    void salvar(Company empresa);
+    List<Empresa> buscarTodos();
+
+    void salvar(Empresa empresa);
 
     void excluir(Long id);
-
-    Company buscarPorEmail(String email);
-
-    Company buscarPorCnpj(String cnpj);
-
-    void validarCamposUnicos(Company empresa, Errors errors);
 }

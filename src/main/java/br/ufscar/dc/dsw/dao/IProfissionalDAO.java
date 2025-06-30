@@ -1,22 +1,21 @@
 package br.ufscar.dc.dsw.dao;
 
+import br.ufscar.dc.dsw.domain.Profissional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
+public interface IProfissionalDAO extends CrudRepository<Profissional, Long> {
+    Profissional findById(long id);
 
-import br.ufscar.dc.dsw.domain.Professional;
+    List<Profissional> findAll();
 
-@SuppressWarnings("unchecked")
-public interface IProfissionalDAO extends CrudRepository<Professional, Long> {
-    Professional findById(long id);
-
-    Professional findByCpf(String cpf);
-
-    Professional findByEmail(String email);
-
-    List<Professional> findAll();
-
-    Professional save(Professional profissional);
+    Profissional save(Profissional profissional);
 
     void deleteById(Long id);
+
+    @Query("SELECT p FROM Profissional p WHERE p.username = :username")
+    Profissional findByUsername(@Param("username") String username);
 }

@@ -1,20 +1,26 @@
 package br.ufscar.dc.dsw.dao;
 
 import java.util.List;
-import org.springframework.data.repository.CrudRepository;
 
-import br.ufscar.dc.dsw.domain.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+import br.ufscar.dc.dsw.domain.Usuario;
+import br.ufscar.dc.dsw.domain.Profissional;
+import br.ufscar.dc.dsw.domain.Empresa;
 
 @SuppressWarnings("unchecked")
+public interface IUsuarioDAO extends CrudRepository<Usuario, Long> {
+	
+	Usuario findById(long id);
 
-public interface IUsuarioDAO extends CrudRepository<User, Long> {
-    User findById(long id);
+	List<Usuario> findAll();
+	
+	Usuario save(Usuario usuario);
 
-    User findByEmail(String email);
-
-    List<User> findAll();
-
-    User save(User usuario);
-
-    void deleteById(Long id);
+	void deleteById(Long id);
+	
+    @Query("SELECT u FROM Usuario u WHERE u.username = :username")
+    public Usuario getUserByUsername(@Param("username") String username);
 }
