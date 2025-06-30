@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+
+		<nav class="navbar navbar-expand-md bg-light">
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<i class="oi oi-caret-right"></i>
+						<span th:text="#{vaga.detalhes.label}"></span>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<div class="container" id="detalhes">
+
+			<div th:replace="~{fragments/alert}"></div>
+
+			<div class="card">
+				<div class="card-header">
+					<h4 th:text="${vaga.empresa.name}"></h4>
+				</div>
+				<div class="card-body">
+					<p><strong>Descrição:</strong> <span th:text="${vaga.descricao}"></span></p>
+					<p><strong>Remuneração:</strong> <span th:text="${vaga.remuneracao}"></span></p>
+					<p><strong>Data Limite de Inscrição:</strong> <span th:text="${#temporals.format(vaga.dataLimiteInscricao, 'dd/MM/yyyy')}"></span></p>
+					<p><strong>Cidade:</strong> <span th:text="${vaga.empresa.cidade}"></span></p>
+
+					<hr>
+
+					<h5>Candidatar-se a esta vaga</h5>
+					<form th:action="@{/vagasPublicas/candidatar/{id}(id=${vaga.id})}" method="post" enctype="multipart/form-data">
+						<div class="form-group">
+							<label for="curriculo">Upload do Currículo (PDF):</label>
+							<input type="file" class="form-control-file" id="curriculo" name="curriculo" accept="application/pdf" required>
+						</div>
+						<button type="submit" class="btn btn-primary">Candidatar</button>
+					</form>
+				</div>
+			</div>
+
+		</div>
+
+	</section>
+</body>
+</html>

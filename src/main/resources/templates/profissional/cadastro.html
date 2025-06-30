@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+
+		<nav class="navbar navbar-expand-md bg-light">
+			<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><i class="oi oi-caret-right"></i>
+						<span th:text="#{profissional.cadastrar.label}"></span></li>
+				</ul>
+				<a class="btn btn-primary btn-md" th:href="@{/profissionais/listar}"
+					role="button"> <span class="oi oi-spreadsheet" title="Listar"
+					aria-hidden="true"></span> <span th:text="#{profissional.listar.label}"></span>
+				</a>
+			</div>
+		</nav>
+
+		<div class="container" id="cadastro">
+
+			<div th:replace="~{fragments/alert}"></div>
+
+			<form
+				th:action="${profissional.id == null} ? @{/profissionais/salvar} : @{/profissionais/editar}"
+				th:object="${profissional}" method="POST">
+
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label th:text="#{profissional.username.label}" for="username"></label>
+						<input type="text" class="form-control" id="username"
+							th:placeholder="#{profissional.username.label}"
+							autofocus="autofocus" th:field="*{username}"
+							th:classappend="${#fields.hasErrors('username')} ? is-invalid" />
+
+						<div class="invalid-feedback">
+							<span th:errors="*{username}"></span>
+						</div>
+					</div>
+
+					<div th:if="${profissional.id == null}" class="form-group col-md-6">
+						<label th:text="#{profissional.password.label}" for="password"></label>
+						<input type="password" class="form-control" id="password"
+							th:placeholder="#{profissional.password.label}" autofocus="autofocus"
+							th:field="*{password}"
+							th:classappend="${#fields.hasErrors('password')} ? is-invalid" />
+							
+						<div class="invalid-feedback">
+							<span th:errors="*{password}"></span>
+						</div>
+					</div>
+
+					<div th:unless="${profissional.id == null}" class="form-group col-md-6">
+						<label th:text="#{profissional.password.label}" for="password"></label>
+						<input type="password" class="form-control" name="novoPassword"
+							th:placeholder="#{profissional.password.label}" autofocus="autofocus"
+							th:classappend="${#fields.hasErrors('password')} ? is-invalid" />
+							
+						<input type="hidden" th:field="*{password}" />
+					</div>
+					
+					<div class="form-group col-md-6">
+						<label th:text="#{profissional.name.label}" for="name"></label>
+						<input type="text" class="form-control" id="name" th:field="*{name}"
+							th:placeholder="#{profissional.name.label}" autofocus="autofocus"
+							th:classappend="${#fields.hasErrors('name')} ? is-invalid" />
+							
+						<div class="invalid-feedback">
+							<span th:errors="*{name}"></span>
+						</div>
+					</div>
+
+					<div class="form-group col-md-6">
+						<label th:text="#{profissional.CPF.label}" for="CPF"></label>
+						<input type="text" class="form-control" id="CPF" th:field="*{CPF}"
+							autofocus="autofocus" placeholder="___.___.___-__"
+							th:classappend="${#fields.hasErrors('CPF')} ? is-invalid" 
+							data-mask="000.000.000-00" data-mask-reverse="true" />
+							
+						<div class="invalid-feedback">
+							<span th:errors="*{CPF}"></span>
+						</div>
+					</div>
+
+					<div class="form-group col-md-6">
+						<label th:text="#{profissional.telefone.label}" for="telefone"></label>
+						<input type="text" class="form-control" id="telefone" th:field="*{telefone}"
+							autofocus="autofocus" placeholder="(__) ____-____"
+							th:classappend="${#fields.hasErrors('telefone')} ? is-invalid" 
+							data-mask="(00) 0000-0000" />
+							
+						<div class="invalid-feedback">
+							<span th:errors="*{telefone}"></span>
+						</div>
+					</div>
+
+					<div class="form-group col-md-6">
+						<label th:text="#{profissional.sexo.label}" for="sexo"></label>
+						<select id="sexo" class="form-control" th:field="*{sexo}"
+							th:classappend="${#fields.hasErrors('sexo')} ? is-invalid">
+							<option value="M">Masculino</option>
+							<option value="F">Feminino</option>
+						</select>
+
+						<div class="invalid-feedback">
+							<span th:errors="*{sexo}"></span>
+						</div>
+					</div>
+
+					<div class="form-group col-md-6">
+						<label th:text="#{profissional.dataNascimento.label}" for="dataNascimento"></label>
+						<input type="date" class="form-control" id="dataNascimento" th:field="*{dataNascimento}"
+							autofocus="autofocus" 
+							th:classappend="${#fields.hasErrors('dataNascimento')} ? is-invalid" />
+							
+						<div class="invalid-feedback">
+							<span th:errors="*{dataNascimento}"></span>
+						</div>
+					</div>
+				</div>
+
+				<input type="hidden" id="id" th:field="*{id}" />
+				<button type="submit" th:text="#{button.salvar.label}"
+					class="btn btn-primary btn-sm"></button>
+			</form>
+		</div>
+	</section>
+</body>
+</html>
