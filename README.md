@@ -8,6 +8,10 @@ Requisito: B1 - Sistema para oferta de vagas de estágios/empregos
 
 Este projeto implementa um sistema de oferta de vagas de estágios e empregos com APIs RESTful para gerenciamento de profissionais, empresas e vagas. As páginas web existentes foram refatoradas para consumir essas APIs.
 
+## Usuários Testes
+
+Podem ser encontrados em `src/main/java/br/ufscar/dc/dsw/LivrariaMvcApplication.java`.
+
 ## Requisitos Implementados
 
 ### R1: CRUD de profissionais (requer login de administrador)
@@ -163,6 +167,9 @@ As validações são realizadas através das anotações `@Valid` nas entidades 
     ```bash
     docker run --name mysql -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql:tag
     ```
+
+2.  **Configurar o email e senha do serviço de e-mail:**
+    Acessar `src/main/resources/application.properties` e configurar os campos `spring.mail.username` e `spring.mail.password`.
 
 2.  **Rodar a aplicação Spring Boot:**
     ```bash
