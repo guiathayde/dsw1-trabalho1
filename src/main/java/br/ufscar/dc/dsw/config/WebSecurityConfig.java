@@ -43,8 +43,10 @@ public class WebSecurityConfig {
           .requestMatchers("/candidaturas/gerenciar/**", "/candidaturas/atualizarStatus").hasRole("EMPRESA")
 
           .requestMatchers("/candidaturas/candidatar/**", "/perfilProfissional","/candidaturas/minhasCandidaturas", "/candidaturas/salvar/**").hasRole("PROFISSIONAL")
+          .requestMatchers("/api/**").permitAll()
           .anyRequest().authenticated()
         )
+        .csrf(csrf -> csrf.disable()) // Desabilita CSRF para simplificar o exemplo
         .formLogin(form -> form
           .loginPage("/login") 
           .successHandler(customAuthenticationSuccessHandler)

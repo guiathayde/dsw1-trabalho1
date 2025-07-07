@@ -98,11 +98,16 @@ public class VagaController {
         String subject = "Atualização da sua candidatura para a vaga de " + candidatura.getVaga().getDescricao();
         String body = "Prezado(a) " + candidatura.getProfissional().getName() + ",\n\n";
 
-        if ("ENTREVISTA".equals(status)) {
+        if ("ENTREVISTA".equals(status) && horarioEntrevista != null && linkEntrevista != null) {
             body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
                     + " foi selecionada para entrevista.\n";
             body += "Horário da entrevista: " + horarioEntrevista + "\n";
             body += "Link da entrevista: " + linkEntrevista + "\n\n";
+            body += "Aguardamos você!\n\n";
+        } else if ("ENTREVISTA".equals(status) && horarioEntrevista == null && linkEntrevista == null) {
+            body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
+                    + " foi selecionada para entrevista.\n"
+                    + "Logo você receberá um e-mail com mais informações sobre a data e horário da entrevista.\n\n";
             body += "Aguardamos você!\n\n";
         } else if ("NAO_SELECIONADO".equals(status)) {
             body += "Informamos que sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
