@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @SuppressWarnings("serial")
 @Entity
@@ -22,6 +23,7 @@ public class Profissional extends Usuario {
     @NotBlank(message = "{NotNull.profissional.CPF}")
     @Size(min = 11, max = 14, message = "{Size.profissional.CPF}")
     @Column(nullable = false, length = 14, unique = true)
+    @JsonProperty("CPF")
     private String CPF;
 
     @NotBlank(message = "{NotNull.profissional.telefone}")

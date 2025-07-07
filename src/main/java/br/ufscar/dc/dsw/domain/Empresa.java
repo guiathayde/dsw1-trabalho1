@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import br.ufscar.dc.dsw.validation.UniqueCNPJEmpresa;
 
 @SuppressWarnings("serial")
@@ -18,7 +21,7 @@ public class Empresa extends Usuario {
 
     @NotBlank(message = "{NotBlank.empresa.cnpj}")
     @Column(nullable = false, length = 18, unique = true)
-    @UniqueCNPJEmpresa(message = "{Unique.empresa.cnpj}")
+    @JsonProperty("cnpj")
     private String cnpj;
 
     @NotBlank(message = "{NotBlank.empresa.descricao}")

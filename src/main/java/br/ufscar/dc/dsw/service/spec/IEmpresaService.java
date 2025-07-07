@@ -13,4 +13,6 @@ public interface IEmpresaService {
     void salvar(Empresa empresa);
 
     void excluir(Long id);
+
+    List<Empresa> buscarPorCidade(String cidade);
 }

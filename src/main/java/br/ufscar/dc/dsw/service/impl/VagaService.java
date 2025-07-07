@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufscar.dc.dsw.dao.IVagaDAO;
+import br.ufscar.dc.dsw.dao.IEmpresaDAO;
 import br.ufscar.dc.dsw.domain.Vaga;
 import br.ufscar.dc.dsw.domain.Empresa;
 import br.ufscar.dc.dsw.service.spec.IVagaService;
@@ -19,6 +20,9 @@ public class VagaService implements IVagaService {
 
     @Autowired
     IVagaDAO dao;
+
+    @Autowired
+    IEmpresaDAO empresaDAO;
 
     public void salvar(Vaga vaga) {
         dao.save(vaga);
@@ -52,5 +56,12 @@ public class VagaService implements IVagaService {
     @Transactional(readOnly = true)
     public List<Vaga> buscarVagasAbertasPorCidade(String cidade) {
         return dao.findByDataLimiteInscricaoAfterAndEmpresaCidade(LocalDate.now(), cidade);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Vaga> buscarVagasAbertasPorEmpresa(Long empresaId) {
+        Empresa empresa = empresaDAO.findById(empresaId)
+                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada com o ID: " + empresaId));
+        return dao.findByEmpresaAndDataLimiteInscricaoAfter(empresa, LocalDate.now());
     }
 }

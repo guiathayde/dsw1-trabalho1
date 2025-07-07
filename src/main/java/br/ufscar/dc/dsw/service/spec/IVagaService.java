@@ -20,4 +20,6 @@ public interface IVagaService {
     List<Vaga> buscarVagasAbertas();
 
     List<Vaga> buscarVagasAbertasPorCidade(String cidade);
+
+    List<Vaga> buscarVagasAbertasPorEmpresa(Long empresaId);
 }

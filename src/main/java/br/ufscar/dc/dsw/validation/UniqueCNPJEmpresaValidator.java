@@ -10,18 +10,17 @@ import br.ufscar.dc.dsw.dao.IEmpresaDAO;
 import br.ufscar.dc.dsw.domain.Empresa;
 
 @Component
-public class UniqueCNPJEmpresaValidator implements ConstraintValidator<UniqueCNPJEmpresa, String> {
+public class UniqueCNPJEmpresaValidator implements ConstraintValidator<UniqueCNPJEmpresa, Empresa> {
 
 	@Autowired
 	private IEmpresaDAO dao;
 
 	@Override
-	public boolean isValid(String cnpj, ConstraintValidatorContext context) {
+	public boolean isValid(Empresa empresa, ConstraintValidatorContext context) {
 		if (dao != null) {
-			Empresa empresa = dao.findByCnpj(cnpj);
-			return empresa == null;
+			Empresa empresaExistente = dao.findByCnpj(empresa.getCnpj());
+			return empresaExistente == null || empresaExistente.getId().equals(empresa.getId());
 		} else {
-			// During LivrariaMvcApplication execution, there is no dependency injection
 			return true;
 		}
 
