@@ -1,0 +1,11 @@
+meta {
+  name: Remove a empresa de id = {id} [Delete - CRUD]
+  type: http
+  seq: 11
+}
+
+delete {
+  url: http://localhost:8080/api/empresas/{id}
+  body: none
+  auth: inherit
+}

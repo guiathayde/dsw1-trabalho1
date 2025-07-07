@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "DSW1 - Trabalho",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

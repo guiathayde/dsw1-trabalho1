@@ -1,0 +1,22 @@
+meta {
+  name: Cria uma nova empresa [Create - CRUD]
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8080/api/empresas
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "emp4@work.com",
+    "password": "emp4@work.com",
+    "name": "Empresa 4",
+    "cnpj": "44.444.444/4444-44",
+    "descricao": "Empresa 4",
+    "cidade": "Araraquara"
+  }
+}

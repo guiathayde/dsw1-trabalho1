@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.ufscar.dc.dsw.dao.ICandidaturaDAO;
+import br.ufscar.dc.dsw.dao.IVagaDAO;
 import br.ufscar.dc.dsw.domain.Candidatura;
 import br.ufscar.dc.dsw.domain.Profissional;
 import br.ufscar.dc.dsw.domain.Vaga;
@@ -18,6 +19,9 @@ public class CandidaturaService implements ICandidaturaService {
 
     @Autowired
     ICandidaturaDAO candidaturaDAO;
+
+    @Autowired
+    IVagaDAO vagaDAO;
 
     @Override
     public Candidatura buscarPorId(Long id) {
@@ -52,5 +56,14 @@ public class CandidaturaService implements ICandidaturaService {
     @Override
     public List<Candidatura> buscarCandidaturasPorVaga(Vaga vaga) {
         return candidaturaDAO.findByVaga(vaga);
+    }
+
+    @Override
+    public List<Candidatura> buscarCandidaturasPorVagaId(Long vagaId) {
+        Vaga vaga = vagaDAO.findById(vagaId).orElse(null);
+        if (vaga != null) {
+            return candidaturaDAO.findByVaga(vaga);
+        }
+        return null;
     }
 }

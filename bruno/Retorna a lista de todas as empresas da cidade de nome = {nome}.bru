@@ -1,0 +1,11 @@
+meta {
+  name: Retorna a lista de todas as empresas da cidade de nome = {nome}
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:8080/api/empresas/cidades/São Carlos
+  body: none
+  auth: inherit
+}

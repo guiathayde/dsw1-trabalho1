@@ -21,4 +21,6 @@ public interface ICandidaturaService {
     Candidatura buscarPorProfissionalEVaga(Profissional profissional, Vaga vaga);
 
     List<Candidatura> buscarCandidaturasPorVaga(Vaga vaga);
+
+    List<Candidatura> buscarCandidaturasPorVagaId(Long vagaId);
 }

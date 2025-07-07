@@ -2,6 +2,8 @@ package br.ufscar.dc.dsw.controller;
 
 import jakarta.validation.Valid;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.ufscar.dc.dsw.domain.Vaga;
@@ -28,7 +32,7 @@ import br.ufscar.dc.dsw.security.UsuarioDetails;
 public class VagaController {
 
     @Autowired
-    private IVagaService vagaService;
+    private RestTemplate restTemplate;
 
     @Autowired
     private ICandidaturaService candidaturaService;
@@ -58,8 +62,13 @@ public class VagaController {
         UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
         Empresa empresaLogada = (Empresa) userDetails.getUsuario();
         vaga.setEmpresa(empresaLogada);
-        vagaService.salvar(vaga);
-        attr.addFlashAttribute("sucess", "vaga.create.sucess");
+        String url = "http://localhost:8080/api/vagas";
+        try {
+            restTemplate.postForObject(url, vaga, Vaga.class);
+            attr.addFlashAttribute("sucess", "vaga.create.sucess");
+        } catch (HttpClientErrorException e) {
+            attr.addFlashAttribute("fail", "vaga.create.fail");
+        }
         return "redirect:/vagas/listar";
     }
 
@@ -68,15 +77,21 @@ public class VagaController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
         Empresa empresa = (Empresa) userDetails.getUsuario();
-        model.addAttribute("vagas", vagaService.buscarPorEmpresa(empresa));
+        String url = "http://localhost:8080/api/vagas/empresas/{id}";
+        Vaga[] vagas = restTemplate.getForObject(url, Vaga[].class, empresa.getId());
+        model.addAttribute("vagas", Arrays.asList(vagas));
         return "vaga/lista";
     }
 
     @GetMapping("/candidaturas/{id}")
     public String listarCandidaturasPorVaga(@PathVariable("id") Long id, ModelMap model) {
-        Vaga vaga = vagaService.buscarPorId(id);
+        String vagaUrl = "http://localhost:8080/api/vagas/{id}";
+        Vaga vaga = restTemplate.getForObject(vagaUrl, Vaga.class, id);
         model.addAttribute("vaga", vaga);
-        model.addAttribute("candidaturas", candidaturaService.buscarCandidaturasPorVaga(vaga));
+
+        String candidaturasUrl = "http://localhost:8080/api/candidaturas/vagas/{id}";
+        Candidatura[] candidaturas = restTemplate.getForObject(candidaturasUrl, Candidatura[].class, id);
+        model.addAttribute("candidaturas", Arrays.asList(candidaturas));
         return "vaga/candidaturas";
     }
 
