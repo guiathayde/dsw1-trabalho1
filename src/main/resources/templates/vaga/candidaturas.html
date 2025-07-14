@@ -51,7 +51,7 @@
 										<option value="ENTREVISTA" th:selected="${candidatura.status == 'ENTREVISTA'}">ENTREVISTA</option>
 									</select>
 									<div th:if="${candidatura.status == 'ENTREVISTA'}">
-										<input type="text" name="horarioEntrevista" placeholder="Horário da Entrevista" class="form-control form-control-sm mt-1">
+										<input type="text" name="horarioEntrevista" placeholder="Data e hora da Entrevista" class="form-control form-control-sm mt-1">
 										<input type="text" name="linkEntrevista" placeholder="Link da Entrevista" class="form-control form-control-sm mt-1">
 									</div>
 									<button type="submit" class="btn btn-primary btn-sm mt-1">Atualizar</button>

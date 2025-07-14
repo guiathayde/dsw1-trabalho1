@@ -24,7 +24,6 @@ import br.ufscar.dc.dsw.domain.Candidatura;
 import br.ufscar.dc.dsw.domain.Empresa;
 import br.ufscar.dc.dsw.service.spec.ICandidaturaService;
 import br.ufscar.dc.dsw.service.spec.IEmailService;
-import br.ufscar.dc.dsw.service.spec.IVagaService;
 import br.ufscar.dc.dsw.security.UsuarioDetails;
 
 @Controller
@@ -104,36 +103,108 @@ public class VagaController {
         Candidatura candidatura = candidaturaService.buscarPorId(candidaturaId);
         if (candidatura == null) {
             attr.addFlashAttribute("fail", "Candidatura não encontrada.");
-            return "redirect:/vagas/candidaturas/" + candidatura.getVaga().getId();
+            return "redirect:/vagas/listar";
         }
 
         candidatura.setStatus(status);
         candidaturaService.salvar(candidatura);
 
-        String subject = "Atualização da sua candidatura para a vaga de " + candidatura.getVaga().getDescricao();
-        String body = "Prezado(a) " + candidatura.getProfissional().getName() + ",\n\n";
+        // Enviar e-mail com o status atualizado
+        if ("ENTREVISTA".equals(status) || "NAO_SELECIONADO".equals(status)) {
+            String subject = "Atualização da sua candidatura para a vaga de " + candidatura.getVaga().getDescricao();
+            String body = "Prezado(a) " + candidatura.getProfissional().getName() + ",\n\n";
 
-        if ("ENTREVISTA".equals(status) && horarioEntrevista != null && linkEntrevista != null) {
-            body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
-                    + " foi selecionada para entrevista.\n";
-            body += "Horário da entrevista: " + horarioEntrevista + "\n";
-            body += "Link da entrevista: " + linkEntrevista + "\n\n";
-            body += "Aguardamos você!\n\n";
-        } else if ("ENTREVISTA".equals(status) && horarioEntrevista == null && linkEntrevista == null) {
-            body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
-                    + " foi selecionada para entrevista.\n"
-                    + "Logo você receberá um e-mail com mais informações sobre a data e horário da entrevista.\n\n";
-            body += "Aguardamos você!\n\n";
-        } else if ("NAO_SELECIONADO".equals(status)) {
-            body += "Informamos que sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
-                    + " não foi selecionada neste momento.\n\n";
-            body += "Agradecemos seu interesse e desejamos sucesso em suas próximas candidaturas.\n\n";
+            if ("ENTREVISTA".equals(status) && horarioEntrevista != null && linkEntrevista != null) {
+                body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
+                        + " foi selecionada para entrevista.\n";
+                body += "Data e hora da entrevista: " + horarioEntrevista + "\n";
+                body += "Link da entrevista: " + linkEntrevista + "\n\n";
+                body += "Aguardamos você!\n\n";
+            } else if ("ENTREVISTA".equals(status) && horarioEntrevista == null && linkEntrevista == null) {
+                body += "Sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
+                        + " foi selecionada para entrevista.\n"
+                        + "Logo você receberá um e-mail com mais informações sobre a data e horário da entrevista.\n\n";
+                body += "Aguardamos você!\n\n";
+            } else if ("NAO_SELECIONADO".equals(status)) {
+                body += "Informamos que sua candidatura para a vaga de " + candidatura.getVaga().getDescricao()
+                        + " não foi selecionada neste momento.\n\n";
+                body += "Agradecemos seu interesse e desejamos sucesso em suas próximas candidaturas.\n\n";
+            }
+            body += "Atenciosamente,\n" + candidatura.getVaga().getEmpresa().getName();
+
+            emailService.sendEmail(candidatura.getProfissional().getUsername(), subject, body);
         }
-        body += "Atenciosamente,\n" + candidatura.getVaga().getEmpresa().getName();
-
-        emailService.sendEmail(candidatura.getProfissional().getUsername(), subject, body);
 
         attr.addFlashAttribute("sucess", "vaga.update.success");
         return "redirect:/vagas/candidaturas/" + candidatura.getVaga().getId();
+    }
+
+    @GetMapping("/editar/{id}")
+    public String preEditar(@PathVariable("id") Long id, ModelMap model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+        Empresa empresa = (Empresa) userDetails.getUsuario();
+
+        String url = "http://localhost:8080/api/vagas/{id}";
+        Vaga vaga = restTemplate.getForObject(url, Vaga.class, id);
+
+        // Verificar se a vaga pertence à empresa logada
+        if (vaga == null || !vaga.getEmpresa().getId().equals(empresa.getId())) {
+            return "redirect:/vagas/listar";
+        }
+
+        model.addAttribute("vaga", vaga);
+        model.addAttribute("empresa", empresa);
+        return "vaga/cadastro";
+    }
+
+    @PostMapping("/editar")
+    public String editar(@Valid Vaga vaga, BindingResult result, RedirectAttributes attr, ModelMap model) {
+        if (result.hasErrors()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+            Empresa empresa = (Empresa) userDetails.getUsuario();
+            model.addAttribute("empresa", empresa);
+            return "vaga/cadastro";
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+        Empresa empresaLogada = (Empresa) userDetails.getUsuario();
+        vaga.setEmpresa(empresaLogada);
+
+        String url = "http://localhost:8080/api/vagas/{id}";
+        try {
+            restTemplate.put(url, vaga, vaga.getId());
+            attr.addFlashAttribute("sucess", "vaga.edit.sucess");
+        } catch (HttpClientErrorException e) {
+            attr.addFlashAttribute("fail", "vaga.edit.fail");
+        }
+        return "redirect:/vagas/listar";
+    }
+
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable("id") Long id, RedirectAttributes attr) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioDetails userDetails = (UsuarioDetails) authentication.getPrincipal();
+        Empresa empresa = (Empresa) userDetails.getUsuario();
+
+        // Verificar se a vaga pertence à empresa logada
+        String vagaUrl = "http://localhost:8080/api/vagas/{id}";
+        Vaga vaga = restTemplate.getForObject(vagaUrl, Vaga.class, id);
+
+        if (vaga == null || !vaga.getEmpresa().getId().equals(empresa.getId())) {
+            attr.addFlashAttribute("fail", "vaga.delete.fail");
+            return "redirect:/vagas/listar";
+        }
+
+        String url = "http://localhost:8080/api/vagas/{id}";
+        try {
+            restTemplate.delete(url, id);
+            attr.addFlashAttribute("sucess", "vaga.delete.sucess");
+        } catch (HttpClientErrorException e) {
+            attr.addFlashAttribute("fail", "vaga.delete.fail");
+        }
+        return "redirect:/vagas/listar";
     }
 }
